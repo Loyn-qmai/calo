@@ -9,6 +9,7 @@ import EntryForm from './components/EntryForm';
 import Reports from './components/Reports';
 import ProfileSettings from './components/ProfileSettings';
 import NutritionAnalysis from './components/NutritionAnalysis';
+import AuthScreen from './components/AuthScreen';
 import { Layout } from './components/Layout';
 import { Loader2 } from 'lucide-react';
 
@@ -28,11 +29,10 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
-        try {
-          await signInAnonymously(auth);
-        } catch (error) {
-          console.error("Anonymous login failed:", error);
-        }
+        setUser(null);
+        setProfile(null);
+        setEntries([]);
+        setLoading(false);
         return;
       }
 
@@ -45,8 +45,9 @@ export default function App() {
         if (!profileSnap.exists()) {
           const newProfile: UserProfile = {
             userId: currentUser.uid,
-            email: currentUser.email || `guest_${currentUser.uid.slice(0, 5)}@calotrack.local`,
+            email: currentUser.email || `user_${currentUser.uid.slice(0, 5)}@calotrack.local`,
             targetCalories: 2000,
+            defaultDailyBurn: 1500,
           };
           await setDoc(profileRef, newProfile);
           setProfile(newProfile);
@@ -97,12 +98,16 @@ export default function App() {
     };
   }, [user]);
 
-  if (loading || !user) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-neutral-50">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-accent-net" />
       </div>
     );
+  }
+
+  if (!user) {
+    return <AuthScreen onSuccess={() => setLoading(true)} />;
   }
 
   return (

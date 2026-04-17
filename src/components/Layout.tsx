@@ -31,12 +31,15 @@ export function Layout({ children, activeTab, setActiveTab, user }: LayoutProps)
           </div>
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
-          <div className="text-text-secondary text-sm mr-4">
+        <div className="flex items-center gap-3">
+          <div className="hidden md:block text-text-secondary text-sm mr-4">
             {format(new Date(), 'EEEE, dd MMMM, yyyy')}
           </div>
-          <button onClick={() => setActiveTab('reports')} className="btn-density">Báo cáo Tuần</button>
-          <button onClick={() => setActiveTab('reports')} className="btn-density">Báo cáo Tháng</button>
+          <button onClick={() => auth.signOut()} className="md:hidden p-2 text-rose-500">
+            <LogOut className="w-5 h-5" />
+          </button>
+          <button onClick={() => setActiveTab('reports')} className="hidden md:block btn-density">Báo cáo Tuần</button>
+          <button onClick={() => setActiveTab('reports')} className="hidden md:block btn-density">Báo cáo Tháng</button>
         </div>
       </header>
 
@@ -61,16 +64,23 @@ export function Layout({ children, activeTab, setActiveTab, user }: LayoutProps)
             ))}
           </nav>
 
-          <div className="mt-auto pt-4 border-t border-border">
+          <div className="mt-auto pt-4 border-t border-border space-y-2">
             <div className="flex items-center gap-3 px-2">
-              <div className="w-8 h-8 rounded-full border border-border bg-neutral-100 flex items-center justify-center text-[10px] font-bold text-text-secondary">
-                {user.displayName ? user.displayName.charAt(0) : 'G'}
+              <div className="w-8 h-8 rounded-full border border-border bg-neutral-100 flex items-center justify-center text-[10px] font-bold text-text-secondary uppercase">
+                {user.displayName ? user.displayName.charAt(0) : user.email?.charAt(0) || 'U'}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-bold text-text-primary truncate">{user.displayName || 'Khách'}</p>
-                <p className="text-[10px] text-text-secondary truncate">{user.email || 'Chế độ ẩn danh'}</p>
+                <p className="text-[12px] font-bold text-text-primary truncate">{user.displayName || 'Người dùng'}</p>
+                <p className="text-[10px] text-text-secondary truncate">{user.email?.split('@')[0]}</p>
               </div>
             </div>
+            <button 
+              onClick={() => auth.signOut()}
+              className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-[10px] font-bold text-rose-500 hover:bg-rose-50 transition-all"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              ĐĂNG XUẤT
+            </button>
           </div>
         </aside>
 
