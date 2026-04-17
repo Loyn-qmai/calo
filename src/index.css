@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f4f6f8;
+  --color-sidebar: #ffffff;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #64748b;
+  --color-accent-in: #10b981;
+  --color-accent-out: #f59e0b;
+  --color-accent-net: #3b82f6;
+  --color-border: #e2e8f0;
+  --color-card-bg: #ffffff;
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-text-primary font-sans;
+  }
+}
+
+@layer components {
+  .section-title {
+    @apply text-[11px] uppercase tracking-wider text-text-secondary mb-3 flex justify-between items-center font-bold;
+  }
+
+  .card-density {
+    @apply bg-card-bg border border-border rounded-xl p-4 mb-4 shadow-none;
+  }
+
+  .btn-density {
+    @apply px-4 py-2 rounded-md text-[13px] font-semibold transition-all border border-border bg-white hover:bg-neutral-50;
+  }
+
+  .btn-density-primary {
+    @apply bg-text-primary text-white border-none hover:bg-neutral-800;
+  }
+
+  .stat-card-density {
+    @apply p-4 rounded-lg border border-border border-l-4 bg-white;
+  }
+
+  .data-item-density {
+    @apply flex justify-between py-2.5 border-b border-neutral-100 text-[13px] last:border-b-0;
+  }
+
+  .item-meta-density {
+    @apply text-text-secondary text-[11px];
+  }
+}

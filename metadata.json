@@ -1,0 +1,6 @@
+{
+  "name": "CaloTrack - Calorie In vs Out",
+  "description": "A comprehensive calorie tracking application to log food intake, exercise, and generate weekly/monthly/yearly reports with Excel export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

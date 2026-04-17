@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user physical data and calorie goals",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "targetCalories": { "type": "number" },
+        "weight": { "type": "number" },
+        "height": { "type": "number" },
+        "age": { "type": "number" },
+        "gender": { "type": "string", "enum": ["male", "female", "other"] },
+        "activityLevel": { "type": "string", "enum": ["sedentary", "light", "moderate", "active", "very_active"] }
+      },
+      "required": ["userId", "email"]
+    },
+    "CalorieEntry": {
+      "title": "Calorie Entry",
+      "description": "A single food or exercise entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "type": { "type": "string", "enum": ["food", "exercise"] },
+        "name": { "type": "string" },
+        "calories": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "dateStr": { "type": "string", "description": "YYYY-MM-DD for easy querying" }
+      },
+      "required": ["userId", "type", "name", "calories", "timestamp", "dateStr"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile document"
+    },
+    "/users/{userId}/entries/{entryId}": {
+      "schema": "CalorieEntry",
+      "description": "Individual calorie entries for a user"
+    }
+  }
+}
