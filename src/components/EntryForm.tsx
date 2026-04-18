@@ -283,64 +283,64 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
         </div>
 
         <div className="card-density p-0 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-[13px]">
+          <div className="overflow-x-auto overflow-y-hidden">
+            <table className="w-full text-[13px] min-w-[500px]">
               <thead>
-                <tr className="text-left bg-neutral-50 border-b border-border">
-                  <th className="px-4 py-2.5 text-[11px] font-bold text-text-secondary uppercase">Thời gian</th>
-                  <th className="px-4 py-2.5 text-[11px] font-bold text-text-secondary uppercase">Loại</th>
-                  <th className="px-4 py-2.5 text-[11px] font-bold text-text-secondary uppercase">Tên</th>
-                  <th className="px-4 py-2.5 text-[11px] font-bold text-text-secondary uppercase text-right">Calo</th>
-                  <th className="px-4 py-2.5 text-[11px] font-bold text-text-secondary uppercase text-right">Giá tiền</th>
-                  <th className="px-4 py-2.5 text-[11px] font-bold text-text-secondary uppercase text-right"></th>
+                <tr className="text-left bg-slate-50 border-b border-border">
+                  <th className="px-4 py-3.5 text-[10px] sm:text-[11px] font-extrabold text-text-secondary uppercase tracking-wider">Thời gian</th>
+                  <th className="px-4 py-3.5 text-[10px] sm:text-[11px] font-extrabold text-text-secondary uppercase tracking-wider">Loại</th>
+                  <th className="px-4 py-3.5 text-[10px] sm:text-[11px] font-extrabold text-text-secondary uppercase tracking-wider">Tên</th>
+                  <th className="px-4 py-3.5 text-[10px] sm:text-[11px] font-extrabold text-text-secondary uppercase tracking-wider text-right">Calo</th>
+                  <th className="px-4 py-3.5 text-[10px] sm:text-[11px] font-extrabold text-text-secondary uppercase tracking-wider text-right">Giá</th>
+                  <th className="px-4 py-3.5 text-[10px] sm:text-[11px] font-extrabold text-text-secondary uppercase tracking-wider text-right"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-100">
+              <tbody className="divide-y divide-slate-50">
                 {filteredEntries.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-10 text-center text-text-secondary italic">
+                    <td colSpan={6} className="px-4 py-16 text-center text-text-secondary italic">
                       Không tìm thấy dữ liệu nào
                     </td>
                   </tr>
                 ) : (
                   filteredEntries.map((entry) => (
-                    <tr key={entry.id} className="group hover:bg-neutral-50 transition-colors">
-                      <td className="px-4 py-3 text-text-secondary">
+                    <tr key={entry.id} className="group hover:bg-slate-50/50 transition-colors active:bg-slate-100">
+                      <td className="px-4 py-4 text-text-secondary font-medium">
                         {format(new Date(entry.timestamp), 'dd/MM HH:mm')}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-4">
                         <span className={cn(
-                          "px-1.5 py-0.5 rounded text-[9px] font-bold uppercase",
-                          entry.type === 'food' ? "bg-blue-50 text-blue-600" : "bg-green-50 text-green-600"
+                          "px-2 py-1 rounded-md text-[9px] font-extrabold uppercase",
+                          entry.type === 'food' ? "bg-blue-50 text-blue-600" : "bg-emerald-50 text-emerald-600"
                         )}>
                           {entry.type === 'food' ? 'ĂN' : 'TẬP'}
                         </span>
                       </td>
-                      <td className="px-4 py-3 font-bold text-text-primary">{entry.name}</td>
+                      <td className="px-4 py-4 font-bold text-text-primary">{entry.name}</td>
                       <td className={cn(
-                        "px-4 py-3 text-right font-bold",
+                        "px-4 py-4 text-right font-black",
                         entry.type === 'food' ? "text-text-primary" : "text-accent-out"
                       )}>
                         {entry.type === 'food' ? `+${entry.calories}` : `-${entry.calories}`}
                       </td>
-                      <td className="px-4 py-3 text-right text-text-secondary">
+                      <td className="px-4 py-4 text-right text-text-secondary font-medium">
                         {entry.price ? `${entry.price.toLocaleString()}đ` : '-'}
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-4 py-4 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => handleStartEdit(entry)}
-                            className="p-1.5 text-neutral-300 hover:text-accent-net transition-colors opacity-0 group-hover:opacity-100"
+                            className="p-2.5 text-slate-300 hover:text-accent-net transition-colors md:opacity-0 group-hover:opacity-100"
                             title="Sửa"
                           >
-                            <Pencil className="w-3.5 h-3.5" />
+                            <Pencil className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => setDeleteId(entry.id)}
-                            className="p-1.5 text-neutral-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                            className="p-2.5 text-slate-300 hover:text-red-500 transition-colors md:opacity-0 group-hover:opacity-100"
                             title="Xóa"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -349,6 +349,9 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
                 )}
               </tbody>
             </table>
+          </div>
+          <div className="md:hidden p-3 bg-slate-50 text-[10px] text-center text-slate-400 font-bold uppercase tracking-widest">
+            Vuốt ngang để xem thêm nội dung
           </div>
         </div>
       </div>

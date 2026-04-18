@@ -112,8 +112,10 @@ export default function AuthScreen({ onSuccess }: AuthScreenProps) {
                 <input
                   type="text"
                   value={username}
+                  autoComplete="username"
+                  autoCapitalize="none"
                   onChange={(e) => setUsername(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 bg-neutral-50 border border-border rounded-xl text-sm outline-none focus:border-accent-net transition-all placeholder:text-neutral-400"
+                  className="block w-full pl-10 pr-3 py-3.5 bg-slate-50 border border-slate-100 rounded-xl text-sm outline-none focus:border-accent-net focus:ring-4 focus:ring-accent-net/5 transition-all placeholder:text-neutral-400"
                   placeholder="Nhập tên đăng nhập"
                   required
                 />
@@ -129,10 +131,13 @@ export default function AuthScreen({ onSuccess }: AuthScreenProps) {
                 <input
                   type="password"
                   maxLength={6}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={password}
+                  autoComplete={isLogin ? "current-password" : "new-password"}
                   onChange={(e) => setPassword(e.target.value.replace(/\D/g, ''))}
-                  className="block w-full pl-10 pr-3 py-3 bg-neutral-50 border border-border rounded-xl text-sm outline-none focus:border-accent-net transition-all placeholder:text-neutral-400 tracking-[0.5em]"
-                  placeholder="******"
+                  className="block w-full pl-10 pr-3 py-3.5 bg-slate-50 border border-slate-100 rounded-xl text-sm outline-none focus:border-accent-net focus:ring-4 focus:ring-accent-net/5 transition-all placeholder:text-neutral-400 tracking-[0.8em] font-mono"
+                  placeholder="••••••"
                   required
                 />
               </div>

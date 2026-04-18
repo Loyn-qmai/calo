@@ -101,18 +101,18 @@ export function Layout({ children, activeTab, setActiveTab, user }: LayoutProps)
       </div>
 
       {/* Bottom Nav for Mobile */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-border flex justify-around p-2 z-50">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-border flex justify-around pwa-safe-bottom pt-3 pb-2 z-50">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "flex flex-col items-center gap-1 px-3 py-1 rounded-lg transition-all",
-              activeTab === tab.id ? "text-accent-net" : "text-text-secondary"
+              "flex flex-col items-center gap-1.5 px-4 py-1 rounded-2xl transition-all active:scale-90",
+              activeTab === tab.id ? "text-accent-net" : "text-slate-400"
             )}
           >
-            <tab.icon className="w-5 h-5" />
-            <span className="text-[9px] font-bold">{tab.label}</span>
+            <tab.icon className={cn("w-5 h-5", activeTab === tab.id ? "stroke-[2.5px]" : "stroke-[2px]")} />
+            <span className="text-[10px] font-extrabold tracking-tight uppercase">{tab.label}</span>
           </button>
         ))}
       </nav>

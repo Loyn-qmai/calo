@@ -65,28 +65,28 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
     <div className="space-y-6">
       <div className="section-title">TỔNG QUAN HÔM NAY</div>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
         <div className="stat-card-density border-l-accent-in">
-          <div className="text-[10px] sm:text-[11px] text-text-secondary font-bold whitespace-nowrap uppercase">CALO IN</div>
-          <div className="text-xl sm:text-2xl font-bold text-accent-in mt-1 truncate">{calIn.toLocaleString()}</div>
+          <div className="text-[10px] sm:text-[11px] text-text-secondary font-extrabold whitespace-nowrap uppercase tracking-wider">CALO IN</div>
+          <div className="text-xl sm:text-2xl font-black text-accent-in mt-1 truncate">{calIn.toLocaleString()}</div>
         </div>
         <div className="stat-card-density border-l-accent-out">
-          <div className="text-[10px] sm:text-[11px] text-text-secondary font-bold whitespace-nowrap uppercase">CALO OUT</div>
-          <div className="text-xl sm:text-2xl font-bold text-accent-out mt-1 truncate">{calOut.toLocaleString()}</div>
+          <div className="text-[10px] sm:text-[11px] text-text-secondary font-extrabold whitespace-nowrap uppercase tracking-wider">CALO OUT</div>
+          <div className="text-xl sm:text-2xl font-black text-accent-out mt-1 truncate">{calOut.toLocaleString()}</div>
         </div>
         <div className="stat-card-density border-l-accent-net">
-          <div className="text-[10px] sm:text-[11px] text-text-secondary font-bold whitespace-nowrap uppercase">CÂN BẰNG</div>
-          <div className="text-xl sm:text-2xl font-bold text-accent-net mt-1 truncate">{net > 0 ? '+' : ''}{net.toLocaleString()}</div>
+          <div className="text-[10px] sm:text-[11px] text-text-secondary font-extrabold whitespace-nowrap uppercase tracking-wider">CÂN BẰNG</div>
+          <div className="text-xl sm:text-2xl font-black text-accent-net mt-1 truncate">{net > 0 ? '+' : ''}{net.toLocaleString()}</div>
         </div>
         <div className="stat-card-density border-l-purple-500">
-          <div className="text-[10px] sm:text-[11px] text-text-secondary font-bold whitespace-nowrap uppercase">CÂN NẶNG +/-</div>
-          <div className="text-xl sm:text-2xl font-bold text-purple-600 mt-1 truncate">
+          <div className="text-[10px] sm:text-[11px] text-text-secondary font-extrabold whitespace-nowrap uppercase tracking-wider">CÂN NẶNG +/-</div>
+          <div className="text-xl sm:text-2xl font-black text-purple-600 mt-1 truncate">
             {weightChangeGrams > 0 ? '-' : '+'}{Math.abs(weightChangeGrams).toFixed(1)}g
           </div>
         </div>
         <div className="stat-card-density border-l-rose-500">
-          <div className="text-[10px] sm:text-[11px] text-text-secondary font-bold whitespace-nowrap uppercase">TỔNG CHI PHÍ</div>
-          <div className="text-xl sm:text-2xl font-bold text-rose-600 mt-1 truncate">{todayCost.toLocaleString()}đ</div>
+          <div className="text-[10px] sm:text-[11px] text-text-secondary font-extrabold whitespace-nowrap uppercase tracking-wider">TỔNG CHI PHÍ</div>
+          <div className="text-xl sm:text-2xl font-black text-rose-600 mt-1 truncate">{todayCost.toLocaleString()}đ</div>
         </div>
       </div>
 
@@ -102,30 +102,30 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
             ) : (
               <ul className="space-y-0">
                 {todayEntries.filter(e => e.type === 'food').map((entry) => (
-                  <li key={entry.id} className="data-item-density group">
-                    <div className="flex-1">
-                      <div className="font-bold">{entry.name}</div>
-                      <div className="item-meta-density">
+                  <li key={entry.id} className="data-item-density group cursor-pointer active:bg-slate-100">
+                    <div className="flex-1 py-1" onClick={() => onEdit(entry)}>
+                      <div className="font-bold text-slate-800">{entry.name}</div>
+                      <div className="item-meta-density mt-0.5">
                         {format(new Date(entry.timestamp), 'HH:mm')}
                         {entry.price ? ` • ${entry.price.toLocaleString()}đ` : ''}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className="font-bold">{entry.calories} kcal</div>
+                    <div className="flex items-center gap-3">
+                      <div className="font-bold text-slate-900">{entry.calories} kcal</div>
                       <div className="flex items-center gap-1">
                         <button 
                           onClick={() => onEdit(entry)}
-                          className="p-1.5 text-neutral-300 hover:text-accent-net transition-colors opacity-0 group-hover:opacity-100"
+                          className="p-2.5 text-slate-300 hover:text-accent-net transition-colors md:opacity-0 group-hover:opacity-100"
                           title="Sửa"
                         >
-                          <Pencil className="w-3.5 h-3.5" />
+                          <Pencil className="w-4 h-4" />
                         </button>
                         <button 
                           onClick={() => setDeleteId(entry.id)}
-                          className="p-1.5 text-neutral-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                          className="p-2.5 text-slate-300 hover:text-red-500 transition-colors md:opacity-0 group-hover:opacity-100"
                           title="Xóa"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -154,30 +154,30 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
             ) : (
               <ul className="space-y-0">
                 {todayEntries.filter(e => e.type === 'exercise').map((entry) => (
-                  <li key={entry.id} className="data-item-density group">
-                    <div className="flex-1">
-                      <div className="font-bold">{entry.name}</div>
-                      <div className="item-meta-density">
+                  <li key={entry.id} className="data-item-density group cursor-pointer active:bg-slate-100">
+                    <div className="flex-1 py-1" onClick={() => onEdit(entry)}>
+                      <div className="font-bold text-slate-800">{entry.name}</div>
+                      <div className="item-meta-density mt-0.5">
                         {format(new Date(entry.timestamp), 'HH:mm')}
                         {entry.price ? ` • ${entry.price.toLocaleString()}đ` : ''}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <div className="font-bold text-accent-out">-{entry.calories} kcal</div>
                       <div className="flex items-center gap-1">
                         <button 
                           onClick={() => onEdit(entry)}
-                          className="p-1.5 text-neutral-300 hover:text-accent-net transition-colors opacity-0 group-hover:opacity-100"
+                          className="p-2.5 text-slate-300 hover:text-accent-net transition-colors md:opacity-0 group-hover:opacity-100"
                           title="Sửa"
                         >
-                          <Pencil className="w-3.5 h-3.5" />
+                          <Pencil className="w-4 h-4" />
                         </button>
                         <button 
                           onClick={() => setDeleteId(entry.id)}
-                          className="p-1.5 text-neutral-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                          className="p-2.5 text-slate-300 hover:text-red-500 transition-colors md:opacity-0 group-hover:opacity-100"
                           title="Xóa"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
