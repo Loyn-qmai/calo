@@ -9,6 +9,7 @@ import EntryForm from './components/EntryForm';
 import Reports from './components/Reports';
 import ProfileSettings from './components/ProfileSettings';
 import NutritionAnalysis from './components/NutritionAnalysis';
+import MealPlanner from './components/MealPlanner';
 import AuthScreen from './components/AuthScreen';
 import { Layout } from './components/Layout';
 import { Loader2 } from 'lucide-react';
@@ -18,7 +19,7 @@ export default function App() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [entries, setEntries] = useState<CalorieEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'entries' | 'reports' | 'profile' | 'analysis'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'entries' | 'reports' | 'profile' | 'analysis' | 'meal-planner'>('dashboard');
   const [editingEntry, setEditingEntry] = useState<CalorieEntry | null>(null);
 
   const handleEdit = (entry: CalorieEntry) => {
@@ -128,6 +129,7 @@ export default function App() {
           onCancelEdit={() => setEditingEntry(null)} 
         />
       )}
+      {activeTab === 'meal-planner' && <MealPlanner profile={profile} />}
       {activeTab === 'reports' && <Reports entries={entries} profile={profile} />}
       {activeTab === 'analysis' && <NutritionAnalysis entries={entries} />}
       {activeTab === 'profile' && <ProfileSettings profile={profile} user={user} />}

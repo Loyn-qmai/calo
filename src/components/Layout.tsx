@@ -1,9 +1,10 @@
 import React from 'react';
 import { User } from 'firebase/auth';
-import { LayoutDashboard, PlusCircle, BarChart3, UserCircle, LogOut, Sparkles, Dumbbell } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, BarChart3, UserCircle, LogOut, Sparkles, Utensils } from 'lucide-react';
 import { auth } from '../firebase';
 import { cn } from '../lib/utils';
 import { format } from 'date-fns';
+import { IOSInstallPrompt } from './ui/IOSInstallPrompt';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export function Layout({ children, activeTab, setActiveTab, user }: LayoutProps)
   const tabs = [
     { id: 'dashboard', label: 'TỔNG QUAN', icon: LayoutDashboard },
     { id: 'entries', label: 'NHẬP LIỆU', icon: PlusCircle },
+    { id: 'meal-planner', label: 'THỰC ĐƠN', icon: Utensils },
     { id: 'reports', label: 'BÁO CÁO', icon: BarChart3 },
     { id: 'analysis', label: 'PHÂN TÍCH', icon: Sparkles },
     { id: 'profile', label: 'CÁ NHÂN', icon: UserCircle },
@@ -116,6 +118,7 @@ export function Layout({ children, activeTab, setActiveTab, user }: LayoutProps)
           </button>
         ))}
       </nav>
+      <IOSInstallPrompt />
     </div>
   );
 }
