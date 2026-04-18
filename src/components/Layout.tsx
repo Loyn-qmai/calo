@@ -5,6 +5,7 @@ import { auth } from '../firebase';
 import { cn } from '../lib/utils';
 import { format } from 'date-fns';
 import { IOSInstallPrompt } from './ui/IOSInstallPrompt';
+import { motion } from 'motion/react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -103,18 +104,35 @@ export function Layout({ children, activeTab, setActiveTab, user }: LayoutProps)
       </div>
 
       {/* Bottom Nav for Mobile */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-border flex justify-around pwa-safe-bottom pt-3 pb-2 z-50">
+      <nav className="md:hidden fixed bottom-6 left-4 right-4 bg-white/90 backdrop-blur-2xl border border-white/50 flex justify-around pwa-safe-bottom py-3 rounded-[2rem] z-50 shadow-2xl shadow-slate-200/50">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "flex flex-col items-center gap-1.5 px-4 py-1 rounded-2xl transition-all active:scale-90",
+              "relative flex flex-col items-center gap-1 px-1 rounded-2xl transition-all duration-300 active:scale-90 flex-1 min-w-0",
               activeTab === tab.id ? "text-accent-net" : "text-slate-400"
             )}
           >
-            <tab.icon className={cn("w-5 h-5", activeTab === tab.id ? "stroke-[2.5px]" : "stroke-[2px]")} />
-            <span className="text-[10px] font-extrabold tracking-tight uppercase">{tab.label}</span>
+            {activeTab === tab.id && (
+              <motion.div
+                layoutId="activeTabMobile"
+                className="absolute -top-1 w-1 h-1 bg-accent-net rounded-full"
+                transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
+              />
+            )}
+            <div className={cn(
+              "p-1 rounded-xl transition-colors",
+              activeTab === tab.id ? "bg-accent-net/10" : "bg-transparent"
+            )}>
+              <tab.icon className={cn("w-5 h-5", activeTab === tab.id ? "stroke-[2.5px]" : "stroke-[2px]")} />
+            </div>
+            <span className={cn(
+              "text-[7px] sm:text-[9px] font-black tracking-tighter uppercase whitespace-nowrap transition-all",
+              activeTab === tab.id ? "scale-105 opacity-100" : "scale-100 opacity-60"
+            )}>
+              {tab.label}
+            </span>
           </button>
         ))}
       </nav>
