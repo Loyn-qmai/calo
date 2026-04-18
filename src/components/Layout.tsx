@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from 'firebase/auth';
-import { LayoutDashboard, PlusCircle, BarChart3, UserCircle, LogOut, Sparkles } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, BarChart3, UserCircle, LogOut, Sparkles, Dumbbell } from 'lucide-react';
 import { auth } from '../firebase';
 import { cn } from '../lib/utils';
 import { format } from 'date-fns';
@@ -26,8 +26,16 @@ export function Layout({ children, activeTab, setActiveTab, user }: LayoutProps)
       {/* Header */}
       <header className="h-16 bg-white border-b border-border flex items-center justify-between px-6 sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <div className="logo font-extrabold text-xl tracking-tighter text-accent-net">
-            METRIC: CALO LOGIC
+          <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center shadow-md">
+            <img 
+              src="/logo.png" 
+              alt="Logo" 
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+          <div className="logo font-extrabold text-lg tracking-tighter text-text-primary">
+            TÔI SẼ GẦY
           </div>
         </div>
 

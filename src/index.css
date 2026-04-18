@@ -36,7 +36,7 @@
   }
 
   .stat-card-density {
-    @apply p-4 rounded-lg border border-border border-l-4 bg-white;
+    @apply p-4 rounded-lg border border-border border-l-4 bg-white overflow-hidden;
   }
 
   .data-item-density {

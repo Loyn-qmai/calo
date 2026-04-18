@@ -66,8 +66,8 @@ export default function Reports({ entries, profile }: ReportsProps) {
         <div className="section-title w-full">
           <span>BÁO CÁO & PHÂN TÍCH</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="bg-rose-50 text-rose-600 px-3 py-1.5 rounded-lg text-[11px] font-bold border border-rose-100 mr-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="bg-rose-50 text-rose-600 px-3 py-1.5 rounded-lg text-[11px] font-bold border border-rose-100 whitespace-nowrap">
             TỔNG CHI PHÍ: {totalCost.toLocaleString()}đ
           </div>
           <div className="flex p-1 bg-neutral-100 rounded-lg mr-2">

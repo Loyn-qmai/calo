@@ -3,7 +3,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfi
 import { auth, db } from '../firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { UserProfile } from '../types';
-import { KeyRound, User, Lock, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { KeyRound, User, Lock, ArrowRight, Loader2, Sparkles, Dumbbell } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 interface AuthScreenProps {
@@ -68,11 +68,16 @@ export default function AuthScreen({ onSuccess }: AuthScreenProps) {
     <div className="min-h-screen bg-bg flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white shadow-xl shadow-orange-500/10 mb-4 border border-border">
-            <Sparkles className="w-8 h-8 text-accent-net" />
+          <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-white shadow-xl shadow-orange-500/10 mb-6 border border-border overflow-hidden p-2">
+            <img 
+              src="/logo.png" 
+              alt="Logo" 
+              className="w-full h-full object-contain"
+              referrerPolicy="no-referrer"
+            />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tighter text-text-primary mb-2">METRIC: CALO LOGIC</h1>
-          <p className="text-text-secondary text-sm">Quản lý sức khỏe thông minh & đơn giản</p>
+          <h1 className="text-3xl font-extrabold tracking-tighter text-text-primary mb-2">TÔI SẼ GẦY</h1>
+          <p className="text-text-secondary text-sm">Bạn Cũng Thế - Hành trình thay đổi bản thân</p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-2xl shadow-neutral-200/50 p-8 border border-border">
