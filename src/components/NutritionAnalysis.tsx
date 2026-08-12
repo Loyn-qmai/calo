@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CalorieEntry } from '../types';
 import { GoogleGenAI, Type } from "@google/genai";
 import { Sparkles, Loader2, Apple, AlertCircle, CheckCircle2, Lightbulb } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn, safeParseDate } from '../lib/utils';
 import { subDays, isAfter } from 'date-fns';
 
 interface NutritionAnalysisProps {
@@ -33,7 +33,7 @@ export default function NutritionAnalysis({ entries }: NutritionAnalysisProps) {
     try {
       // Filter entries from last 7 days
       const lastWeek = subDays(new Date(), 7);
-      const recentEntries = entries.filter(e => isAfter(new Date(e.timestamp), lastWeek));
+      const recentEntries = entries.filter(e => isAfter(safeParseDate(e.timestamp), lastWeek));
       
       const entrySummary = recentEntries.map(e => 
         `${e.type === 'food' ? 'Ăn' : 'Tập'}: ${e.name} (${e.calories} kcal)`

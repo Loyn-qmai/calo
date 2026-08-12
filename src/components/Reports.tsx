@@ -7,6 +7,7 @@ import {
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, subDays, startOfMonth, endOfMonth, isSameDay, subMonths } from 'date-fns';
 import { Download, Calendar, TrendingUp } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { cn, safeParseDate, safeFormatDate } from '../lib/utils';
 
 interface ReportsProps {
   entries: CalorieEntry[];
@@ -23,7 +24,7 @@ export default function Reports({ entries, profile }: ReportsProps) {
     const days = eachDayOfInterval({ start, end });
     
     return days.map(day => {
-      const dayEntries = entries.filter(e => isSameDay(new Date(e.timestamp), day));
+      const dayEntries = entries.filter(e => isSameDay(safeParseDate(e.timestamp), day));
       const food = dayEntries.filter(e => e.type === 'food').reduce((acc, curr) => acc + curr.calories, 0);
       const exercise = dayEntries.filter(e => e.type === 'exercise').reduce((acc, curr) => acc + curr.calories, 0);
       const net = food - exercise;
@@ -42,8 +43,8 @@ export default function Reports({ entries, profile }: ReportsProps) {
 
   const exportToExcel = () => {
     const data = entries.map(e => ({
-      'Ngày': format(new Date(e.timestamp), 'dd/MM/yyyy'),
-      'Giờ': format(new Date(e.timestamp), 'HH:mm'),
+      'Ngày': safeFormatDate(e.timestamp, 'dd/MM/yyyy'),
+      'Giờ': safeFormatDate(e.timestamp, 'HH:mm'),
       'Loại': e.type === 'food' ? 'Thức ăn' : 'Tập luyện',
       'Tên': e.name,
       'Calo (kcal)': e.calories,
@@ -204,5 +205,3 @@ export default function Reports({ entries, profile }: ReportsProps) {
     </div>
   );
 }
-
-import { cn } from '../lib/utils';

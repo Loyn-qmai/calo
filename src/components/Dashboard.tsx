@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { UserProfile, CalorieEntry, OperationType } from '../types';
-import { format, isSameDay } from 'date-fns';
+import { format, isSameDay, subDays, eachDayOfInterval } from 'date-fns';
 import { Utensils, Dumbbell, Target, Flame, Pencil, Trash2, Wallet } from 'lucide-react';
 import { motion } from 'motion/react';
 import { User } from 'firebase/auth';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { handleFirestoreError } from '../lib/utils';
+import { handleFirestoreError, cn, safeParseDate, safeFormatDate } from '../lib/utils';
 import { ConfirmModal } from './ui/ConfirmModal';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
-import { subDays, eachDayOfInterval, startOfDay } from 'date-fns';
 
 interface DashboardProps {
   profile: UserProfile | null;
@@ -25,11 +24,11 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
   const [chartPeriod, setChartPeriod] = useState<7 | 14 | 30>(7);
   const [viewDateStr, setViewDateStr] = useState(() => format(new Date(), 'yyyy-MM-dd'));
 
-  const viewDate = new Date(viewDateStr + 'T00:00:00');
+  const viewDate = safeParseDate(viewDateStr);
   const isToday = isSameDay(viewDate, new Date());
   const isYesterday = isSameDay(viewDate, subDays(new Date(), 1));
 
-  const dayEntries = entries.filter(e => isSameDay(new Date(e.timestamp), viewDate));
+  const dayEntries = entries.filter(e => isSameDay(safeParseDate(e.timestamp), viewDate));
   
   const calIn = dayEntries.filter(e => e.type === 'food').reduce((acc, curr) => acc + curr.calories, 0);
   const exerciseOut = dayEntries.filter(e => e.type === 'exercise').reduce((acc, curr) => acc + curr.calories, 0);
@@ -47,7 +46,7 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
 
     return days.map(day => {
       const dayCost = entries
-        .filter(e => isSameDay(new Date(e.timestamp), day))
+        .filter(e => isSameDay(safeParseDate(e.timestamp), day))
         .reduce((acc, curr) => acc + (curr.price || 0), 0);
       
       return {
@@ -139,7 +138,7 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
                     <div className="flex-1 py-1" onClick={() => onEdit(entry)}>
                       <div className="font-bold text-slate-800">{entry.name}</div>
                       <div className="item-meta-density mt-0.5">
-                        {format(new Date(entry.timestamp), 'HH:mm')}
+                        {safeFormatDate(entry.timestamp, 'HH:mm')}
                         {entry.price ? ` • ${entry.price.toLocaleString()}đ` : ''}
                       </div>
                     </div>
@@ -191,7 +190,7 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
                     <div className="flex-1 py-1" onClick={() => onEdit(entry)}>
                       <div className="font-bold text-slate-800">{entry.name}</div>
                       <div className="item-meta-density mt-0.5">
-                        {format(new Date(entry.timestamp), 'HH:mm')}
+                        {safeFormatDate(entry.timestamp, 'HH:mm')}
                         {entry.price ? ` • ${entry.price.toLocaleString()}đ` : ''}
                       </div>
                     </div>
@@ -341,5 +340,3 @@ function StatCard({ title, value, unit, icon: Icon, color }: any) {
     </div>
   );
 }
-
-import { cn } from '../lib/utils';

@@ -3,7 +3,7 @@ import { User } from 'firebase/auth';
 import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { EntryType, CalorieEntry, OperationType } from '../types';
-import { handleFirestoreError, cn } from '../lib/utils';
+import { handleFirestoreError, cn, safeParseDate, safeFormatDate } from '../lib/utils';
 import { format } from 'date-fns';
 import { Utensils, Dumbbell, Plus, Trash2, Search, Sparkles, Loader2, Pencil, X, Clock } from 'lucide-react';
 import { GoogleGenAI, Type } from "@google/genai";
@@ -36,11 +36,7 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
       setPrice(editingEntry.price?.toString() || '');
       setLocalEditingId(editingEntry.id);
       if (editingEntry.timestamp) {
-        try {
-          setEntryDateTime(format(new Date(editingEntry.timestamp), "yyyy-MM-dd'T'HH:mm"));
-        } catch {
-          setEntryDateTime(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
-        }
+        setEntryDateTime(safeFormatDate(editingEntry.timestamp, "yyyy-MM-dd'T'HH:mm"));
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -53,11 +49,7 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
     setPrice(entry.price?.toString() || '');
     setLocalEditingId(entry.id);
     if (entry.timestamp) {
-      try {
-        setEntryDateTime(format(new Date(entry.timestamp), "yyyy-MM-dd'T'HH:mm"));
-      } catch {
-        setEntryDateTime(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
-      }
+      setEntryDateTime(safeFormatDate(entry.timestamp, "yyyy-MM-dd'T'HH:mm"));
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -118,9 +110,8 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
     if (!name || !calories) return;
 
     setLoading(true);
-    const selectedDate = entryDateTime ? new Date(entryDateTime) : new Date();
-    const isDateValid = !isNaN(selectedDate.getTime());
-    const finalDate = isDateValid ? selectedDate : new Date();
+    const selectedDate = entryDateTime ? safeParseDate(entryDateTime) : new Date();
+    const finalDate = !isNaN(selectedDate.getTime()) ? selectedDate : new Date();
     const timestampStr = finalDate.toISOString();
     const dateStr = format(finalDate, 'yyyy-MM-dd');
     
@@ -351,7 +342,7 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
                   filteredEntries.map((entry) => (
                     <tr key={entry.id} className="group hover:bg-slate-50/50 transition-colors active:bg-slate-100">
                       <td className="px-4 py-4 text-text-secondary font-medium">
-                        {format(new Date(entry.timestamp), 'dd/MM HH:mm')}
+                        {safeFormatDate(entry.timestamp, 'dd/MM HH:mm')}
                       </td>
                       <td className="px-4 py-4">
                         <span className={cn(

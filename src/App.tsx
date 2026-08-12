@@ -76,7 +76,11 @@ export default function App() {
           id: doc.id,
           ...doc.data()
         })) as CalorieEntry[];
-        setEntries(entriesData.sort((a, b) => b.timestamp.localeCompare(a.timestamp)));
+        setEntries(entriesData.sort((a, b) => {
+          const tA = typeof a.timestamp === 'string' ? a.timestamp : '';
+          const tB = typeof b.timestamp === 'string' ? b.timestamp : '';
+          return tB.localeCompare(tA);
+        }));
       },
       (error) => {
         handleFirestoreError(error, OperationType.LIST, entriesPath);
