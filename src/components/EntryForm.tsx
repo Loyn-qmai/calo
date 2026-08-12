@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
-import { collection, addDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { EntryType, CalorieEntry, OperationType } from '../types';
 import { handleFirestoreError, cn } from '../lib/utils';
 import { format } from 'date-fns';
-import { Utensils, Dumbbell, Plus, Trash2, Search, Sparkles, Loader2, Pencil, X } from 'lucide-react';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { Utensils, Dumbbell, Plus, Trash2, Search, Sparkles, Loader2, Pencil, X, Clock } from 'lucide-react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { ConfirmModal } from './ui/ConfirmModal';
 
@@ -22,6 +21,7 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
   const [name, setName] = useState('');
   const [calories, setCalories] = useState('');
   const [price, setPrice] = useState('');
+  const [entryDateTime, setEntryDateTime] = useState(() => format(new Date(), "yyyy-MM-dd'T'HH:mm"));
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,6 +35,13 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
       setCalories(editingEntry.calories.toString());
       setPrice(editingEntry.price?.toString() || '');
       setLocalEditingId(editingEntry.id);
+      if (editingEntry.timestamp) {
+        try {
+          setEntryDateTime(format(new Date(editingEntry.timestamp), "yyyy-MM-dd'T'HH:mm"));
+        } catch {
+          setEntryDateTime(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
+        }
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [editingEntry]);
@@ -45,6 +52,13 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
     setCalories(entry.calories.toString());
     setPrice(entry.price?.toString() || '');
     setLocalEditingId(entry.id);
+    if (entry.timestamp) {
+      try {
+        setEntryDateTime(format(new Date(entry.timestamp), "yyyy-MM-dd'T'HH:mm"));
+      } catch {
+        setEntryDateTime(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
+      }
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -53,6 +67,7 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
     setName('');
     setCalories('');
     setPrice('');
+    setEntryDateTime(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
     if (onCancelEdit) onCancelEdit();
   };
 
@@ -103,7 +118,11 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
     if (!name || !calories) return;
 
     setLoading(true);
-    const now = new Date();
+    const selectedDate = entryDateTime ? new Date(entryDateTime) : new Date();
+    const isDateValid = !isNaN(selectedDate.getTime());
+    const finalDate = isDateValid ? selectedDate : new Date();
+    const timestampStr = finalDate.toISOString();
+    const dateStr = format(finalDate, 'yyyy-MM-dd');
     
     try {
       if (localEditingId) {
@@ -113,6 +132,8 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
           name,
           calories: Number(calories),
           price: price ? Number(price) : 0,
+          timestamp: timestampStr,
+          dateStr,
         });
         handleCancelEdit();
       } else {
@@ -122,13 +143,14 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
           name,
           calories: Number(calories),
           price: price ? Number(price) : 0,
-          timestamp: now.toISOString(),
-          dateStr: format(now, 'yyyy-MM-dd'),
+          timestamp: timestampStr,
+          dateStr,
         };
         await addDoc(collection(db, `users/${user.uid}/entries`), entryData);
         setName('');
         setCalories('');
         setPrice('');
+        setEntryDateTime(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
       }
     } catch (error) {
       handleFirestoreError(
@@ -235,6 +257,29 @@ export default function EntryForm({ user, entries, editingEntry, onCancelEdit }:
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="0"
                 className="w-full px-3 py-2 bg-neutral-50 border border-border rounded-lg text-[13px] outline-none focus:border-accent-net transition-all"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold text-text-secondary uppercase flex items-center gap-1">
+                  <Clock className="w-3 h-3 text-accent-net" />
+                  THỜI GIAN NHẬP LIỆU
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setEntryDateTime(format(new Date(), "yyyy-MM-dd'T'HH:mm"))}
+                  className="text-[10px] font-bold text-accent-net hover:underline transition-all"
+                >
+                  BÂY GIỜ
+                </button>
+              </div>
+              <input
+                type="datetime-local"
+                value={entryDateTime}
+                onChange={(e) => setEntryDateTime(e.target.value)}
+                className="w-full px-3 py-2 bg-neutral-50 border border-border rounded-lg text-[13px] font-medium outline-none focus:border-accent-net transition-all text-text-primary"
+                required
               />
             </div>
 

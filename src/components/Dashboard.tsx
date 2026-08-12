@@ -23,20 +23,25 @@ interface DashboardProps {
 export default function Dashboard({ profile, entries, user, onEdit }: DashboardProps) {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [chartPeriod, setChartPeriod] = useState<7 | 14 | 30>(7);
-  const today = new Date();
-  const todayEntries = entries.filter(e => isSameDay(new Date(e.timestamp), today));
+  const [viewDateStr, setViewDateStr] = useState(() => format(new Date(), 'yyyy-MM-dd'));
+
+  const viewDate = new Date(viewDateStr + 'T00:00:00');
+  const isToday = isSameDay(viewDate, new Date());
+  const isYesterday = isSameDay(viewDate, subDays(new Date(), 1));
+
+  const dayEntries = entries.filter(e => isSameDay(new Date(e.timestamp), viewDate));
   
-  const calIn = todayEntries.filter(e => e.type === 'food').reduce((acc, curr) => acc + curr.calories, 0);
-  const exerciseOut = todayEntries.filter(e => e.type === 'exercise').reduce((acc, curr) => acc + curr.calories, 0);
+  const calIn = dayEntries.filter(e => e.type === 'food').reduce((acc, curr) => acc + curr.calories, 0);
+  const exerciseOut = dayEntries.filter(e => e.type === 'exercise').reduce((acc, curr) => acc + curr.calories, 0);
   const baseBurn = profile?.defaultDailyBurn || 0;
   const calOut = exerciseOut + baseBurn;
   const target = profile?.targetCalories || 2000;
   const net = calIn - calOut;
   const weightChangeGrams = -(net / 7.7);
-  const todayCost = todayEntries.reduce((acc, curr) => acc + (curr.price || 0), 0);
+  const todayCost = dayEntries.reduce((acc, curr) => acc + (curr.price || 0), 0);
 
   const spendingData = React.useMemo(() => {
-    const end = today;
+    const end = viewDate;
     const start = subDays(end, chartPeriod - 1);
     const days = eachDayOfInterval({ start, end });
 
@@ -50,7 +55,7 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
         'Chi phí': dayCost
       };
     });
-  }, [entries, chartPeriod]);
+  }, [entries, chartPeriod, viewDateStr]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -63,7 +68,35 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
 
   return (
     <div className="space-y-6">
-      <div className="section-title">TỔNG QUAN HÔM NAY</div>
+      <div className="section-title flex flex-wrap justify-between items-center gap-2">
+        <span>TỔNG QUAN ({isToday ? 'HÔM NAY' : isYesterday ? 'HÔM QUA' : format(viewDate, 'dd/MM/yyyy')})</span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setViewDateStr(format(new Date(), 'yyyy-MM-dd'))}
+            className={cn(
+              "px-2.5 py-1 rounded-md text-[10px] font-extrabold transition-all border",
+              isToday ? "bg-accent-net text-white border-accent-net shadow-sm" : "bg-white text-text-secondary border-border hover:bg-slate-50"
+            )}
+          >
+            HÔM NAY
+          </button>
+          <button
+            onClick={() => setViewDateStr(format(subDays(new Date(), 1), 'yyyy-MM-dd'))}
+            className={cn(
+              "px-2.5 py-1 rounded-md text-[10px] font-extrabold transition-all border",
+              isYesterday ? "bg-accent-net text-white border-accent-net shadow-sm" : "bg-white text-text-secondary border-border hover:bg-slate-50"
+            )}
+          >
+            HÔM QUA
+          </button>
+          <input
+            type="date"
+            value={viewDateStr}
+            onChange={(e) => e.target.value && setViewDateStr(e.target.value)}
+            className="px-2 py-0.5 bg-white border border-border rounded-md text-[11px] font-bold outline-none focus:border-accent-net text-text-primary"
+          />
+        </div>
+      </div>
       
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
         <div className="stat-card-density border-l-accent-in">
@@ -97,11 +130,11 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
             <span>NHẬT KÝ ĂN UỐNG (IN)</span>
           </div>
           <div className="card-density max-h-[500px] overflow-y-auto">
-            {todayEntries.filter(e => e.type === 'food').length === 0 ? (
+            {dayEntries.filter(e => e.type === 'food').length === 0 ? (
               <p className="text-text-secondary text-xs italic text-center py-4">Chưa có dữ liệu ăn uống</p>
             ) : (
               <ul className="space-y-0">
-                {todayEntries.filter(e => e.type === 'food').map((entry) => (
+                {dayEntries.filter(e => e.type === 'food').map((entry) => (
                   <li key={entry.id} className="data-item-density group cursor-pointer active:bg-slate-100">
                     <div className="flex-1 py-1" onClick={() => onEdit(entry)}>
                       <div className="font-bold text-slate-800">{entry.name}</div>
@@ -149,11 +182,11 @@ export default function Dashboard({ profile, entries, user, onEdit }: DashboardP
               </div>
               <div className="font-bold text-accent-out">-{baseBurn} kcal</div>
             </div>
-            {todayEntries.filter(e => e.type === 'exercise').length === 0 && baseBurn === 0 ? (
+            {dayEntries.filter(e => e.type === 'exercise').length === 0 && baseBurn === 0 ? (
               <p className="text-text-secondary text-xs italic text-center py-4">Chưa có dữ liệu tập luyện</p>
             ) : (
               <ul className="space-y-0">
-                {todayEntries.filter(e => e.type === 'exercise').map((entry) => (
+                {dayEntries.filter(e => e.type === 'exercise').map((entry) => (
                   <li key={entry.id} className="data-item-density group cursor-pointer active:bg-slate-100">
                     <div className="flex-1 py-1" onClick={() => onEdit(entry)}>
                       <div className="font-bold text-slate-800">{entry.name}</div>
